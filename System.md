@@ -22,3 +22,8 @@
       - Zygote：Zygote 进程也叫孵化进程，它主要作用是启动system-server和作为守护进程监听处理“孵化新进程”的请求。
   4. Zygote启动了system-server进程，system-server会启动系统中的各种服务，像AMS，PMS，WMS，等等。
   5. 在启动的AMS服务中，又会去启动Launcher进程，到这里整个Android启动便完成。
+
+
+#### 系统服务何时启动？如何启动？
+
+  在SystemServer进程启动时，会分批启动所有系统服务。通过SystemServiceManager#startService来启动一个服务，服务启动后需要注册到ServiceManager中，其他进程访问ServiceManager来获取服务的代理对象。
