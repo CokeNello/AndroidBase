@@ -27,3 +27,10 @@
 #### 系统服务何时启动？如何启动？
 
   在SystemServer进程启动时，会分批启动所有系统服务。通过SystemServiceManager#startService来启动一个服务，服务启动后需要注册到ServiceManager中，其他进程访问ServiceManager来获取服务的代理对象。
+
+
+#### Zygote是什么？有什么用？
+
+  参考：[https://chowdera.com/2021/12/20211205120759493s.html](https://chowdera.com/2021/12/20211205120759493s.html)
+
+  Zygote是Android系统中的孵化进程，由用户空间的第一个进程Init进程启动的，Zygote主要作用启动了SystemServer进程，和孵化启动应用程序进程。
