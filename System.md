@@ -42,7 +42,9 @@
   预加载是指在Zygote进程启动的时候就加载一些类库和资源文件，这样系统只需要在第一次启动Zygote时加载这些共用的资源，子进程创建时只需要复用即可无需再次加载。
 
 
+#### 系统中有几个Zygote进程？
 
+  一般系统中有3个Zygote进程，zygote、zygote64和webview_zygote。zygote用来孵化32位的应用程序，zygote64用来孵化64位的应用程序，webview_zygote用来孵化webview进程。
 
 
 
