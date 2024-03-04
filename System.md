@@ -47,7 +47,9 @@
   一般系统中有3个Zygote进程，zygote、zygote64和webview_zygote。zygote用来孵化32位的应用程序，zygote64用来孵化64位的应用程序，webview_zygote用来孵化webview进程。
 
 
+#### 孵化应用进程这种事为什么不交给SystemServer来做，而专门设计一个Zygote？
 
+  SystemServer里跑了一堆系统服务，这些系统服务是不能继承到应用进程的。所以SystemServer和应用进程里都要用到的资源抽出来单独放在一个进程里，也就是这的zygote进程，然后zygote进程再分别孵化出SystemServer进程和应用进程。
 
 
 
