@@ -52,6 +52,25 @@
   SystemServer里跑了一堆系统服务，这些系统服务是不能继承到应用进程的。所以SystemServer和应用进程里都要用到的资源抽出来单独放在一个进程里，也就是这的zygote进程，然后zygote进程再分别孵化出SystemServer进程和应用进程。
 
 
+#### Zygote的IPC通信机制为什么使用socket而不采用binder？
+  - Zygote通过fork来孵化进程，而fork采用的是CopyOnWrite机制，由于可能存在的死锁问题，Unix禁止fork一个多线程程序。Zygote当然也是多线程的，除了主线程外还有4条守护线程，每次fork前都需要停止这些线程，待fork结束后重新执行。
+  - Zygote进程先于SystemServer创建，如果要使用Binder，那么需要等待SystemServer创建完成之后再向SystemServer注册Binder服务，这里需要额外的同步操作。
+
+  Binder机制是需要建立Binder线程池的，代理对象对Binder的调用是在Binder线程池中，在通过线程间通信通知主线程。
+
+  例如Activity启动时，AMS的本地代理IApplicationThread运行在Binder线程池中，处理完毕后通过Handler通知ActivityThread来执行启动Activity的流程。
+
+  Zygote本身只需与SystemServer以及子Zygote进程通信，并不依赖多线程来提升性能，若使用Binder反而增加了Zygote中的线程数，使得性能下降。
+
+  SystemServer不受到此限制，它并不需要fork自身来创建子进程，所以它会在第一时间初始化Binder线程池。
+
+  ---
+
+  1. 同步原因：Zygote进程先于SystemServer创建，如果要使用Binder，那么需要 Zygote 需要等待SystemServer创建完成之后再向SystemServer注册Binder服务，这里需要额外的同步操作。
+  2. 性能原因：Binder 有16 个子线程来提升性能，而 Zygote本身只需与SystemServer以及子Zygote进程通信，并不依赖多线程来提升性能，若使用Binder反而增加了Zygote中的线程数，使得性能下降。
+  3. 死锁原因：Zygote 采用 binder，binder 是多线程，在 Zygote fock 进程的时候，有可能出现死锁
+
+
 
 
 
