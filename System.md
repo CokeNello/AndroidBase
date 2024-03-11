@@ -71,7 +71,21 @@
   3. 死锁原因：Zygote 采用 binder，binder 是多线程，在 Zygote fock 进程的时候，有可能出现死锁
 
 
+#### 能说说fock具体是怎么导致死锁的吗？
 
+  [https://www.cnblogs.com/liyuan989/p/4279210.html](https://www.cnblogs.com/liyuan989/p/4279210.html)
+
+  我们知道通过fork创建的一个子进程几乎但不完全与父进程相同。子进程得到与父进程用户级虚拟地址空间相同的（但是独立的）一份拷贝，包括文本、数据和bss段、堆以及用户栈等。子进程还获得与父进程任何打开文件描述符相同的拷贝，这就意味着子进程可以读写父进程中任何打开的文件，父进程和子进程之间最大的区别在于它们有着不同的PID。  但是有一点需要注意的是，在Linux中，fork的时候只复制当前线程到子进程，在fork(2)-Linux Man Page中有着这样一段相关的描述：  
+
+  > The child process is created with a single thread--the one that called fork(). The entire virtual address space of the parent is replicated in the child, including the states of mutexes, condition variables, and other pthreads objects; the use of pthread_atfork(3) may be helpful for dealing with problems that this can cause.  
+
+  也就是说除了调用fork的线程外，其他线程在子进程中“蒸发”了。  
+
+  这就是多线程中fork所带来的一切问题的根源所在了。
+
+  ---
+
+  fork() 时只会把调用线程（就是当前进程跑的线程）拷贝到子进程、其他线程都会立即停止且不会被拷贝，那如果一个线程在 fork() 前占用了某个互斥量（锁），fork() 后该线程被立即停止，这个互斥量（锁）就得不到释放，再去请求该互斥量就会发生死锁了。
 
 
 
