@@ -39,6 +39,11 @@
 
   通过 IPC
 
+#### 什么是IPC
+
+  IPC是进程间通信InterProcess Communication的缩写
+
+
 
 
 
