@@ -53,7 +53,9 @@
   ![](https://secure2.wostatic.cn/static/srdg6yt84oGxzWCQvSpmDW/image.png?auth_key=1712622318-sKBBXx9FWXSp23Ww6aQE6d-0-d873d504bf41001449a4e031325b3495)
 
   
+#### 什么是MMap
 
+  mmap是一种内存映射文件的方法，即将一个文件或者其它对象映射到进程的地址空间，实现文件磁盘地址和进程虚拟地址空间中一段虚拟地址的一一对映关系。
 
 
 
