@@ -59,7 +59,9 @@
 
 
 
+#### 什么是 Binder？
 
+  Binder 是Android上特有的跨进程通信方式。
 
 
 
