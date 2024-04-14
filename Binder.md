@@ -77,4 +77,17 @@
   - 基于上述原因，Android 需要建立一套新的 IPC 机制来满足系统对稳定性、传输性能和安全性方面的要求，这就是 Binder。
 
 
+#### Binder是怎么加载到Linux内核的
+
+  （跨进程通信是需要内核空间做支持的。传统的 IPC 机制如管道、Socket 都是内核的一部分，因此通过内核支持来实现进程间通信自然是没问题的。但是 Binder 并不是 Linux 系统内核的一部分，那怎么办呢？）
+
+  Binder通过Linux的动态内核可加载模块（Loadable Kernel Module，LKM）的机制，动态添加Binder模块运行在内核空间
+
+
+
+
+
+
+
+
 
