@@ -84,7 +84,15 @@
   Binder通过Linux的动态内核可加载模块（Loadable Kernel Module，LKM）的机制，动态添加Binder模块运行在内核空间
 
 
+#### 说说 Binder 跨进程通信原理
 
+  Binder IPC 正是基于内存映射（mmap）来实现的。一次完整的 Binder IPC 通信过程通常是这样：
+
+  1. 首先 Binder 驱动在内核空间创建一个数据接收缓存区；
+  2. 接着在内核空间开辟一块内核缓存区，建立**内核缓存区**和**内核中数据接收缓存区**之间的映射关系，以及**内核中数据接收缓存区**和**接收进程用户空间地址**的映射关系；
+  3. 发送方进程通过系统调用 copy_from_user() 将数据 copy 到内核中的**内核缓存区**，由于内核缓存区和接收进程的用户空间存在内存映射，因此也就相当于把数据发送到了接收进程的用户空间，这样便完成了一次进程间的通信。
+
+  ![](https://secure2.wostatic.cn/static/xhvY8HUUEk4ZdPskgc672s/image.png?auth_key=1713186601-s1XdPRXagjyJxF53LUhVir-0-afe052e96bb62b48912a0eba3ee2367e)
 
 
 
