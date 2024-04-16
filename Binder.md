@@ -95,7 +95,19 @@
   ![](https://secure2.wostatic.cn/static/xhvY8HUUEk4ZdPskgc672s/image.png?auth_key=1713186601-s1XdPRXagjyJxF53LUhVir-0-afe052e96bb62b48912a0eba3ee2367e)
 
 
+#### 什么是ServiceManager？有什么作用
 
+  ServiceManager是用来管理实名Binder的进程，提供 Binder 服务的注册和查询，它的作用类似于网络请求中的DNS域名服务器，在客户端Client需要访问某个实名Binder，Client会请求ServiceManger拿到具体名字的Binder服务端的引用，然后Client就可以通过服务端的引用发起请求。
+
+  同时，服务端需要向ServiceManager注册自己，以向其他Client提供服务。
+
+  
+
+  注意，Client向ServiceManger查询，和Server向ServiceManger注册Binder，都是跨进程通信，这里也是通过Binder来通信，ServiceManager 是 Server 端，有自己的 Binder 实体，其他进程都是 Client，需要通过这个 Binder 的引用来实现 Binder 的注册，查询和获取。ServiceManager 提供的 Binder 比较特殊，它没有名字也不需要注册。这个 Binder 实体的引用在所有 Client 中都固定为 0 而无需通过其它手段获得。也就是说，一个 Server 想要向 ServiceManager 注册自己的 Binder 就必须通过这个 0 号引用和 ServiceManager 的 Binder 通信。
+
+  
+
+  一个进程使用 BINDER_SET_CONTEXT_MGR 命令将自己注册成 ServiceManager 时 Binder 驱动会自动为它创建 Binder 实体
 
 
 
